@@ -1,6 +1,5 @@
 (ns core-property-test
   (:require [clojure.test :refer :all]
-            [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
@@ -17,6 +16,10 @@
 (def generate-element
   gen/int)
 
+;; Генератор для ключа (он будет хэшироваться)
+(def generate-key
+  gen/any)
+
 ;; -----------------------------------------------------------------------
 ;;                         Property-based тесты
 
@@ -28,23 +31,25 @@
                   (and (= (merge-bags empty bag) bag)
                        (= (merge-bags bag empty) bag)))))
 
-;; Свойство инвариантности: после добавления и удаления элемента мешок остается таким же
+;; Свойство инвариантности: после добавления и удаления элемента по ключу мешок остается таким же
 (defspec add-remove-invariant
   100
-  (prop/for-all [element generate-element
+  (prop/for-all [key generate-key
+                 element generate-element
                  bag generate-bag]
-                (let [new-bag (add-to-bag bag element)]
-                  (= (remove-one-from-bag new-bag element) bag))))
+                (let [new-bag (add-to-bag bag key element)]
+                  (= (remove-one-from-bag new-bag key element) bag))))
 
-;; Свойство идемпотентности: добавление элемента дважды сохраняет порядок
+;; Свойство идемпотентности: добавление элемента дважды сохраняет порядок для ключа
 (defspec idempotent-add
   100
-  (prop/for-all [element generate-element
+  (prop/for-all [key generate-key
+                 element generate-element
                  bag generate-bag]
-                (let [new-bag (add-to-bag (add-to-bag bag element) element)]
-                  (= (get new-bag (hash element)) (concat (get bag (hash element)) [element element])))))
+                (let [new-bag (add-to-bag (add-to-bag bag key element) key element)]
+                  (= (get new-bag (hash key)) (concat (get bag (hash key)) [element element])))))
 
-;; Свойство фильтрации: фильтрование элементов должно оставлять только те элементы, которые удовлетворяют предикату
+;; Свойство фильтрации: фильтрация элементов должна оставлять только те элементы, которые удовлетворяют предикату
 (defspec filter-bag-test
   100
   (prop/for-all [bag generate-bag]

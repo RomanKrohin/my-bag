@@ -1,17 +1,17 @@
 (ns core
   (:require [clojure.spec.alpha :as s]))
 
-;; Создает пустой мешок с использованием separate chaining
+;; Создает пустой мешок
 (defn create-bag []
   {})
 
-;; Функция для добавления элемента в мешок
-(defn add-to-bag [bag element]
-  (update bag (hash element) #(conj (or % []) element)))
+;; Функция для добавления элемента в мешок по ключу
+(defn add-to-bag [bag key element]
+  (update bag (hash key) #(conj (or % []) element)))
 
-;; Функция для удаления одного элемента из мешка
-(defn remove-one-from-bag [bag element]
-  (let [hash-key (hash element)
+;; Функция для удаления одного элемента из мешка по ключу
+(defn remove-one-from-bag [bag key element]
+  (let [hash-key (hash key)
         current-list (get bag hash-key [])]
     (if (empty? current-list)
       bag
@@ -36,7 +36,7 @@
 (defn map-bag [bag f]
   (reduce
    (fn [new-bag [k v]]
-     (merge-with into new-bag {(hash (f k)) (map f v)}))
+     (assoc new-bag k (map f v)))
    empty-bag
    bag))
 
@@ -58,9 +58,9 @@
 
 ;; Спецификации для функций
 (s/fdef add-to-bag
-  :args (s/cat :bag map? :element any?)
+  :args (s/cat :bag map? :key any? :element any?)
   :ret map?)
 
 (s/fdef remove-one-from-bag
-  :args (s/cat :bag map? :element any?)
+  :args (s/cat :bag map? :key any? :element any?)
   :ret map?)
