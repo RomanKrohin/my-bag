@@ -1,4 +1,12 @@
 
+---
+
+**Студент:** Крохин Роман Олегович  
+**ИСУ:** 368381  
+**Группа:** P3324  
+**Университет:** НИУ ИТМО  
+**Факультет:** Программная инженерия и компьютерная техника  
+**Курс:** 3-й курс  
 
 ---
 
@@ -39,8 +47,8 @@
 Функция `add-to-bag` добавляет элемент в мешок. Для этого используется функция `update`, которая создает новый мешок с добавленным элементом:
 
 ```clojure
-(defn add-to-bag [bag element]
-  (update bag (hash element) #(conj (or % []) element)))
+(defn add-to-bag [bag key element]
+  (update bag (hash key) #(conj (or % []) element)))
 ```
 
 ### Удаление элемента
@@ -48,8 +56,8 @@
 Функция `remove-one-from-bag` удаляет один элемент из мешка. Она возвращает новый мешок без изменяемых данных:
 
 ```clojure
-(defn remove-one-from-bag [bag element]
-  (let [hash-key (hash element)
+(defn remove-one-from-bag [bag key element]
+  (let [hash-key (hash key)
         current-list (get bag hash-key [])]
     (if (empty? current-list)
       bag
@@ -76,7 +84,7 @@
 (defn map-bag [bag f]
   (reduce
    (fn [new-bag [k v]]
-     (merge-with into new-bag {(hash (f k)) (map f v)}))
+     (assoc new-bag k (map f v)))
    empty-bag
    bag))
 ```
@@ -86,6 +94,7 @@
 Слевая и правая свертки реализованы в функциях `fold-left` и `fold-right` соответственно:
 
 ```clojure
+;; Слевая свёртка (fold-left)
 (defn fold-left [bag f init]
   (reduce
    (fn [acc [k v]]
@@ -93,6 +102,7 @@
    init
    bag))
 
+;; Справа свёртка (fold-right)
 (defn fold-right [bag f init]
   (reduce
    (fn [acc [k v]]
@@ -116,45 +126,11 @@
 
 ### Unit Testing
 
-Для тестирования были реализованы следующие тесты:
-
-```clojure
-(deftest test-add-to-bag
-  (testing "Add element to bag"
-    (let [bag (add-to-bag empty-bag 1)]
-      (is (= (get bag (hash 1)) [1])))))
-
-(deftest test-remove-one-from-bag
-  (testing "Remove one element from bag"
-    (let [bag (-> (add-to-bag empty-bag 1)
-                  (add-to-bag 1)
-                  (remove-one-from-bag 1))]
-      (is (= (get bag (hash 1)) [1])))))
-```
+Для тестирования были реализованы следующие [тесты](lab2/test/core_test.clj)
 
 ### Property-Based Testing
 
-Были протестированы свойства мешка:
-
-1. Если в мешке нет элементов, то удаление не меняет мешок.
-2. Добавление элемента к мешку увеличивает его размер.
-3. Свертка элементов дает ожидаемый результат.
-
-```clojure
-(defspec filter-always-returns-smaller-or-equal-size
-  100
-  (prop/for-all [bag (gen/bag)]
-    (let [filtered (filter-bag bag #(> % 0)]
-          original-size (count bag)
-          filtered-size (count filtered)]
-      (<= filtered-size original-size))))
-
-(defspec add-to-bag-preserves-invariants
-  100
-  (prop/for-all [bag (gen/bag) element (gen/int)]
-    (let [new-bag (add-to-bag bag element)]
-      (contains? new-bag (hash element)))))
-```
+Были протестированы [свойства](lab2/test/core_property_test.clj)
 
 ## Выводы
 
