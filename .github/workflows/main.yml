@@ -1,0 +1,32 @@
+name: Clojure CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Clojure
+      uses: DeLaGuardo/setup-clojure@master
+      with:
+        cli: 1.10.3.1040
+
+    - name: Install clj-kondo
+      run: npm install -g clj-kondo
+
+    - name: Lint code
+      run: cd lab2 && clojure -A:lint
+
+    - name: Format code
+      run: cd lab2 && clojure -A:format
+
+    - name: Run tests
+      run: cd lab2 && clojure -A:test
