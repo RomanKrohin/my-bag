@@ -1,5 +1,4 @@
-(ns my-bag
-  (:require [clojure.spec.alpha :as s]))
+(ns my-bag)
 
 ;; Протокол для мешка (Bag)
 (defprotocol BagProtocol
@@ -15,6 +14,7 @@
 (defrecord Bag [elements]
   BagProtocol
   ;; Добавление элемента
+  #_{:clj-kondo/ignore [:unused-binding]}
   (add-to-bag [this key element]
     (let [updated-elements (update elements (hash key) #(conj (or % []) element))]
       (Bag. updated-elements)))
@@ -31,16 +31,19 @@
             (Bag. (assoc elements hash-key new-list)))))))
 
   ;; Объединение двух мешков
+  #_{:clj-kondo/ignore [:unused-binding]}
   (merge-bags [this other-bag]
     (let [merged-elements (merge-with into elements (:elements other-bag))]
       (Bag. merged-elements)))
 
   ;; Фильтрация элементов по предикату
+  #_{:clj-kondo/ignore [:unused-binding]}
   (filter-bag [this pred]
     (let [filtered-elements (into {} (map (fn [[k v]] [k (filter pred v)]) elements))]
       (Bag. filtered-elements)))
 
   ;; Левосторонняя свёртка
+  #_{:clj-kondo/ignore [:unused-binding]}
   (fold-left [this f init]
     (reduce
      (fn [acc [k v]]
@@ -49,6 +52,7 @@
      elements))
 
   ;; Правосторонняя свёртка
+  #_{:clj-kondo/ignore [:unused-binding]}
   (fold-right [this f init]
     (reduce
      (fn [acc [k v]]

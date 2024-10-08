@@ -1,9 +1,9 @@
-(ns core-property-test
-  (:require [clojure.test :refer :all]
+(ns core-property-test  
+  (:require 
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
-            [core :refer :all]))
+            [core :refer [create-bag merge-bags add-to-bag remove-one-from-bag filter-bag]]))
 
 ;; -----------------------------------------------------------------------
 ;;                         Generators

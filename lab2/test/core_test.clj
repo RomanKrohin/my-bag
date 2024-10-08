@@ -1,8 +1,10 @@
-(ns core-test
-  (:require [clojure.test :refer :all]
-            [core :refer :all]))
 
-(deftest test-add-to-bag
+#_{:clj-kondo/ignore [:require-use]}
+(ns core-test
+  (:require [clojure.test :refer [deftest is]]
+            [core :refer [create-bag merge-bags add-to-bag remove-one-from-bag filter-bag fold-right fold-left]]))
+
+(deftest test-add-to-bag 
   (let [bag (create-bag)]
     (is (= (add-to-bag bag :key1 1) {(hash :key1) [1]}))
     (is (= (add-to-bag (add-to-bag bag :key1 1) :key1 1) {(hash :key1) [1 1]}))))

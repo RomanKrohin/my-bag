@@ -43,6 +43,7 @@
 ;; Левосторонняя свёртка для мультисета
 (defn fold-left [bag f init]
   (reduce
+   #_{:clj-kondo/ignore [:unused-binding]}
    (fn [acc [k v]]
      (reduce #(f %1 %2) acc v))
    init
@@ -51,6 +52,7 @@
 ;; Правосторонняя свёртка для мультисета
 (defn fold-right [bag f init]
   (reduce
+   #_{:clj-kondo/ignore [:unused-binding]}
    (fn [acc [k v]]
      (reduce #(f %2 %1) acc (reverse v)))
    init
