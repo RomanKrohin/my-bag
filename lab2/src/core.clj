@@ -1,15 +1,15 @@
 (ns core
   (:require [clojure.spec.alpha :as s]))
 
-;; Создает пустой мешок
+;; Создаёт пустой мультисет (Bag)
 (defn create-bag []
   {})
 
-;; Функция для добавления элемента в мешок по ключу
+;; Функция для добавления элемента в мультисет по ключу
 (defn add-to-bag [bag key element]
   (update bag (hash key) #(conj (or % []) element)))
 
-;; Функция для удаления одного элемента из мешка по ключу
+;; Функция для удаления одного экземпляра элемента из мультисета по ключу
 (defn remove-one-from-bag [bag key element]
   (let [hash-key (hash key)
         current-list (get bag hash-key [])]
@@ -20,19 +20,19 @@
           (dissoc bag hash-key)
           (assoc bag hash-key new-list))))))
 
-;; Функция для объединения двух мешков
+;; Функция для объединения двух мультисетов
 (defn merge-bags [bag1 bag2]
   (merge-with into bag1 bag2))
 
-;; Пустой мешок
+;; Пустой мультисет
 (def empty-bag
   (create-bag))
 
-;; Фильтрация элементов в мешке по предикату
+;; Фильтрация элементов в мультисете по предикату
 (defn filter-bag [bag pred]
   (into {} (map (fn [[k v]] [k (filter pred v)]) bag)))
 
-;; Отображение элементов мешка с помощью функции
+;; Отображение элементов мультисета с помощью функции
 (defn map-bag [bag f]
   (reduce
    (fn [new-bag [k v]]
@@ -40,7 +40,7 @@
    empty-bag
    bag))
 
-;; Слевая свёртка (fold-left)
+;; Левосторонняя свёртка для мультисета
 (defn fold-left [bag f init]
   (reduce
    (fn [acc [k v]]
@@ -48,7 +48,7 @@
    init
    bag))
 
-;; Справа свёртка (fold-right)
+;; Правосторонняя свёртка для мультисета
 (defn fold-right [bag f init]
   (reduce
    (fn [acc [k v]]
