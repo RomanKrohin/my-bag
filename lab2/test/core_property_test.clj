@@ -24,7 +24,7 @@
 ;;                         Property-based тесты
 
 ;; Свойство моноида: объединение пустого мешка с любым мешком возвращает исходный мешок
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec merge-empty-bag
   100
   (prop/for-all [bag generate-bag]
@@ -33,7 +33,7 @@
                        (= (merge-bags bag empty) bag)))))
 
 ;; Свойство инвариантности: после добавления и удаления элемента по ключу мешок остается таким же
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec add-remove-invariant
   100
   (prop/for-all [key generate-key
@@ -43,7 +43,7 @@
                   (= (remove-one-from-bag new-bag key element) bag))))
 
 ;; Свойство идемпотентности: добавление элемента дважды сохраняет порядок для ключа
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec idempotent-add
   100
   (prop/for-all [key generate-key
@@ -53,7 +53,7 @@
                   (= (get new-bag (hash key)) (concat (get bag (hash key)) [element element])))))
 
 ;; Свойство моноида: объединение мешка с самим собой дважды дает тот же результат
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec merge-associative
   100
   (prop/for-all [bag generate-bag]
@@ -61,7 +61,7 @@
                    (merge-bags bag (merge-bags bag bag)))))
 
 ;; Свойство полиморфизма: мешок может корректно работать с различными типами данных
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec polymorphic-bag-test
   100
   (prop/for-all [key generate-key
@@ -72,7 +72,7 @@
 
 
 ;; Свойство фильтрации: фильтрация элементов должна оставлять только те элементы, которые удовлетворяют предикату
-;; clj-kondo:ignore unresolved-symbol
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec filter-bag-test
   100
   (prop/for-all [bag generate-bag]
