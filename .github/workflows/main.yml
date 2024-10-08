@@ -27,3 +27,6 @@ jobs:
 
     - name: Run tests
       run: cd lab2 && clojure -A:test
+
+    - name: Run lint
+      run: cd lab2 && clojure -A:lint
