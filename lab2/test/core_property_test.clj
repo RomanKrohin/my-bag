@@ -49,6 +49,23 @@
                 (let [new-bag (add-to-bag (add-to-bag bag key element) key element)]
                   (= (get new-bag (hash key)) (concat (get bag (hash key)) [element element])))))
 
+;; Свойство моноида: объединение мешка с самим собой дважды дает тот же результат
+(defspec merge-associative
+  100
+  (prop/for-all [bag generate-bag]
+                (= (merge-bags (merge-bags bag bag) bag)
+                   (merge-bags bag (merge-bags bag bag)))))
+
+;; Свойство полиморфизма: мешок может корректно работать с различными типами данных
+(defspec polymorphic-bag-test
+  100
+  (prop/for-all [key generate-key
+                 element (gen/one-of [gen/int gen/string gen/boolean])
+                 bag (gen/map gen/any (gen/vector gen/any))]
+                (let [new-bag (add-to-bag bag key element)]
+                  (= (get new-bag (hash key)) (conj (get bag (hash key) []) element)))))
+
+
 ;; Свойство фильтрации: фильтрация элементов должна оставлять только те элементы, которые удовлетворяют предикату
 (defspec filter-bag-test
   100
